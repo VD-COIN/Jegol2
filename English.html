@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            text-align: center;
+            padding: 5px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            margin:10px;
+            padding:15px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        #countdown {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        .hidden {
+            display: none;
+        }
+        .pdf-viewer {
+            text-align: left;
+            font-size: 16px;
+            margin: 0px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #e9ecef;
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        h2{
+            font-size:30px;
+            font-weight:bold;
+        }
+        .bold{
+            font-size:25px;
+            font-weight:bold;
+        }
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="initial-view">
+        <h2>ENGLISH SUBJECT PERIOD</h2>
+        <p>
+            Let's start learning about nouns!
+        </p>    
+        <button class="btn" id="continue-btn">Start</button> 
+    </div>
+    <div class="container hidden" id="final-view">
+        <div id="countdown">25:00</div>
+        <div class="pdf-viewer">
+            <h2>What is a Noun?</h2>
+            <p>A noun is a special kind of word that names a person, place, thing, or animal. Nouns help us talk about everything around us. For example, if you’re talking about your dog, your school, or your favorite book, you’re using nouns!</p>
+            <h3>Examples of Nouns</h3>
+            <ul>
+                <li><strong>People:</strong> Teacher, friend, mother</li>
+                <li><strong>Places:</strong> Park, zoo, city</li>
+                <li><strong>Things:</strong> Pencil, car, apple</li>
+                <li><strong>Animals:</strong> Cat, dog, elephant</li>
+            </ul>
+            <h3>Types of Nouns</h3>
+            <p>Nouns can be divided into different types based on what they name:</p>
+            <ol>
+                <li><strong>Common Nouns:</strong>
+                    <ul>
+                        <li>These are general names for people, places, or things.</li>
+                        <li><strong>Examples:</strong> boy, school, toy</li>
+                        <li>Common nouns do not name specific things but just general ones.</li>
+                    </ul>
+                </li>
+                <li><strong>Proper Nouns:</strong>
+                    <ul>
+                        <li>These are specific names of people, places, or things and always start with a capital letter.</li>
+                        <li><strong>Examples:</strong> John, London, Barbie</li>
+                        <li>Proper nouns are used when you’re talking about a specific person, place, or thing.</li>
+                    </ul>
+                </li>
+                <li><strong>Collective Nouns:</strong>
+                    <ul>
+                        <li>These are words that refer to a group of people, animals, or things.</li>
+                        <li><strong>Examples:</strong> team, family, herd</li>
+                        <li>Collective nouns are used when you want to talk about a group as a single unit.</li>
+                    </ul>
+                </li>
+                <li><strong>Abstract Nouns:</strong>
+                    <ul>
+                        <li>These nouns name ideas, feelings, or qualities that you cannot see or touch.</li>
+                        <li><strong>Examples:</strong> happiness, bravery, love</li>
+                        <li>Abstract nouns are about things you experience in your mind or emotions.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>By understanding nouns and their types, you can become a better speaker and writer, making your sentences clear and interesting!</p>
+        </div>
+        <a href="quizEnglish.html" class="btn hidden" id="start-test-btn">Start Test</a>
+    </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Sorry, you can't proceed yet!</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('continue-btn').addEventListener('click', function() {
+            const text = `Ok, now you will start learning about nouns. Let's go!`;
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            speechSynthesis.speak(utterance);
+
+            utterance.onend = function() {
+                document.getElementById('initial-view').classList.add('hidden');
+                document.getElementById('final-view').classList.remove('hidden');
+
+                let time = 25 * 60;
+                const countdownElement = document.getElementById('countdown');
+                const startTestBtn = document.getElementById('start-test-btn');
+                
+                function updateCountdown() {
+                    const minutes = Math.floor(time / 60);
+                    const seconds = time % 60;
+                    countdownElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    time--;
+
+                    if (time < 0) {
+                        clearInterval(timer);
+                        countdownElement.textContent = '00:00';
+                        startTestBtn.classList.remove('hidden');
+                    }
+                }
+
+                updateCountdown();
+                const timer = setInterval(updateCountdown, 1000);
+            };
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('myModal');
+        const btn = document.getElementById('start-test-btn');
+        const span = document.getElementsByClassName('close')[0];
+
+        btn.addEventListener('click', function(event) {
+            if (countdownElement.textContent !== '00:00') {
+                event.preventDefault();
+                modal.style.display = 'block';
+            }
+        });
+
+        span.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
